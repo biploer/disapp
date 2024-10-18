@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io"
+	"html/template"
 	"log/slog"
 	"net/http"
 	"os"
@@ -30,11 +30,7 @@ func main() {
 	flag.Parse()
 
 	config := config.MustLoad(*configPath)
-	// тестово создал сообщение
 	msgs := storage.New()
-	dur, _ := time.ParseDuration("5m")
-	testId := msgs.Add("ghljk23324", dur)
-	slog.Info("New message was created: " + testId.String())
 
 	router := http.NewServeMux()
 	router.HandleFunc("/hi/{name}", func(w http.ResponseWriter, r *http.Request) {
@@ -55,17 +51,23 @@ func main() {
 		w.Write([]byte(msg.Body))
 	})
 	router.HandleFunc("POST /api/messages", func(w http.ResponseWriter, r *http.Request) {
-		// decoder := json.NewDecoder(r.Body)
-		// type testStruct struct {
-
-		// }
-		// var t testStruct
-		// err := decoder.Decode(&t)
-		body, _ := io.ReadAll(r.Body)
-		slog.Info(string(body))
+		msg := r.FormValue("msg")
+		dur, _ := time.ParseDuration("5m")
+		msgId := msgs.Add(msg, dur)
+		url := "http://" + config.Address + "/m/" + msgId.String()
+		w.Write([]byte("<div style=\"background-color: bisque; width: auto; height: 100px;\">" + url + "</div>"))
 	})
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("<h1>What`s that?</h1>"))
+		name := "index.html"
+		path := filepath.Join(projectBaseDir, "web", name)
+		htmlTemp, err := template.New(name).ParseFiles(path)
+		if err != nil {
+			slog.Error("faild to pars html template", slog.Attr{
+				Key:   "error",
+				Value: slog.StringValue(err.Error()),
+			})
+		}
+		htmlTemp.Execute(w, nil)
 	})
 
 	server := http.Server{
@@ -75,21 +77,6 @@ func main() {
 		WriteTimeout: config.Timeout,
 		IdleTimeout:  config.IdleTimeout,
 	}
-
-	// uu, err := uuid.NewRandom()
-	// if err != nil {
-	// 	slog.Error(err.Error())
-	// }
-	// dur, err := time.ParseDuration("5m")
-	// if err != nil {
-	// 	slog.Error(err.Error())
-	// }
-	// message.AllMessages[uu] = message.New("привет!", dur)
-	// fmt.Print("AllMessages: ")
-	// fmt.Println(message.AllMessages)
-	// delete(message.AllMessages, uu)
-	// fmt.Print("AllMessages after deletion: ")
-	// fmt.Println(message.AllMessages)
 
 	startingMsg := fmt.Sprintf("--- Starting server on %s", config.Address)
 	slog.Info(startingMsg)
