@@ -21,7 +21,7 @@ func Run(ctx context.Context) error {
 		panic(err)
 	}
 	projectBaseDir = filepath.Dir(filepath.Dir(filepath.Dir(projectBaseDir)))
-	slog.Info(fmt.Sprintf("Project base dir: %s", projectBaseDir))
+	slog.Debug(fmt.Sprintf("Project base dir: %s", projectBaseDir))
 
 	defaultConfigPath := filepath.Join(projectBaseDir, "config", "local.yaml")
 

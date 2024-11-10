@@ -3,15 +3,15 @@ package handler
 import (
 	"disapp/internal/config"
 	"disapp/internal/storage"
-	"html/template"
 	"log/slog"
 	"net/http"
-	"path/filepath"
 	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 )
+
+type handlerFunc func(http.ResponseWriter, *http.Request) error
 
 func RegisterRoutes(router chi.Router, msgs storage.Messages, config config.Config, projectBaseDir string) {
 	router.HandleFunc("/hi/{name}", func(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +28,7 @@ func RegisterRoutes(router chi.Router, msgs storage.Messages, config config.Conf
 			})
 			w.Write([]byte("Sorry, but your URL is incorrect"))
 		}
-		msg := msgs.Take(parsedId) // TODO: надо добавить проверку на наличие
+		msg := msgs.Take(parsedId) // TODO: add an existence check
 		w.Write([]byte(msg.Body))
 	})
 	router.HandleFunc("POST /api/messages", func(w http.ResponseWriter, r *http.Request) {
@@ -38,16 +38,18 @@ func RegisterRoutes(router chi.Router, msgs storage.Messages, config config.Conf
 		url := "http://" + config.Address + "/m/" + msgId.String()
 		w.Write([]byte("<div style=\"background-color: bisque; width: auto; height: 100px;\">" + url + "</div>"))
 	})
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		name := "index.html"
-		path := filepath.Join(projectBaseDir, "web", name)
-		htmlTemp, err := template.New(name).ParseFiles(path)
-		if err != nil {
-			slog.Error("faild to pars html template", slog.Attr{
-				Key:   "error",
-				Value: slog.StringValue(err.Error()),
-			})
+
+	router.Get("/", handler(homeHandler{}.handleIndex))
+}
+
+func handler(h handlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if err := h(w, r); err != nil {
+			handleError(w, r, err)
 		}
-		htmlTemp.Execute(w, nil)
-	})
+	}
+}
+
+func handleError(w http.ResponseWriter, r *http.Request, err error) {
+	slog.Error("error during request", slog.String("err", err.Error()))
 }
