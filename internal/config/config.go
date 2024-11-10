@@ -19,7 +19,7 @@ type HTTPServer struct {
 }
 
 // Load configuration file or call Fatalf
-func MustLoad(configPath string) *Config {
+func MustLoad(configPath string) Config {
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
 		log.Fatalf("config file does not exist: %s", configPath)
 	}
@@ -30,5 +30,5 @@ func MustLoad(configPath string) *Config {
 		log.Fatalf("can not read config: %s", err)
 	}
 
-	return &config
+	return config
 }
