@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"disapp/internal/config"
-	"disapp/internal/handlers/storage"
+	"disapp/internal/storage"
 
 	"github.com/google/uuid"
 )
