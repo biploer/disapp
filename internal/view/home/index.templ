@@ -1,0 +1,21 @@
+package home
+
+import "disapp/internal/view/layout"
+
+templ Index() {
+    @layout.Base(layout.BaseProps{Title: "Disappearing Messages"}) {
+        <h1>Disappearing Messages</h1>
+        <div id="messages">
+            <form>
+                <div>
+                    <label for="msg">Впишите сюда ваше сообщение</label>
+                    <br />
+                    <textarea cols="30" rows="10" name="msg" id="msg" placeholder="Ваше сообщение, которое исчезнет после одного просмотра" autocomplete="off"></textarea>
+                </div>
+                <div>
+                    <button hx-post="/api/messages" hx-target="#messages">Отправить</button>
+                </div>
+            </form>
+        </div>
+    }
+}
