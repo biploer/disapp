@@ -21,10 +21,6 @@ type Dependences struct {
 type handlerFunc func(http.ResponseWriter, *http.Request) error
 
 func RegisterRoutes(router chi.Router, deps Dependences) {
-	router.HandleFunc("/hi/{name}", func(w http.ResponseWriter, r *http.Request) {
-		name := r.PathValue("name")
-		w.Write([]byte("Hi, " + name))
-	})
 	router.HandleFunc("GET /m/{uuid}", func(w http.ResponseWriter, r *http.Request) {
 		id := r.PathValue("uuid")
 		parsedId, err := uuid.Parse(id)
