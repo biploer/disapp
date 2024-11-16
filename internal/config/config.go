@@ -10,6 +10,7 @@ import (
 
 type Config struct {
 	HTTPServer `yaml:"http_server"`
+	AssetsDir  string `yaml:"assets_dir"`
 }
 
 type HTTPServer struct {

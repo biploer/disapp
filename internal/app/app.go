@@ -32,7 +32,12 @@ func Run(ctx context.Context) error {
 	msgs := storage.New()
 
 	router := chi.NewRouter()
-	handler.RegisterRoutes(router, msgs, config, projectBaseDir)
+	handler.RegisterRoutes(router, handler.Dependences{
+		AssetsFS:       http.Dir(config.AssetsDir),
+		Msgs:           msgs,
+		Config:         config,
+		ProjectBaseDir: projectBaseDir,
+	})
 
 	server := http.Server{
 		Addr:         config.Address,
