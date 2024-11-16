@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/google/uuid"
 )
 
 type Dependences struct {
@@ -21,19 +20,7 @@ type Dependences struct {
 type handlerFunc func(http.ResponseWriter, *http.Request) error
 
 func RegisterRoutes(router chi.Router, deps Dependences) {
-	router.HandleFunc("GET /m/{uuid}", func(w http.ResponseWriter, r *http.Request) {
-		id := r.PathValue("uuid")
-		parsedId, err := uuid.Parse(id)
-		if err != nil {
-			slog.Error("faild to pars uuid from URL", slog.Attr{
-				Key:   "error",
-				Value: slog.StringValue(err.Error()),
-			})
-			w.Write([]byte("Sorry, but your URL is incorrect"))
-		}
-		msg := deps.Msgs.Take(parsedId) // TODO: add an existence check
-		w.Write([]byte(msg.Body))
-	})
+	router.Get("/m/{uuid}", handler(messageHandler{msgs: deps.Msgs}.handleMessageView))
 	router.HandleFunc("POST /api/messages", func(w http.ResponseWriter, r *http.Request) {
 		msg := r.FormValue("msg")
 		dur, _ := time.ParseDuration("5m")
@@ -55,5 +42,7 @@ func handler(h handlerFunc) http.HandlerFunc {
 }
 
 func handleError(w http.ResponseWriter, r *http.Request, err error) {
+	_ = w
+	_ = r
 	slog.Error("error during request", slog.String("err", err.Error()))
 }
