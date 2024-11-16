@@ -1,4 +1,4 @@
 bin/
 config/
 !config/local.yaml
-tmp/
+web/node_modules/

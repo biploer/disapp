@@ -11,9 +11,16 @@ import (
 	"github.com/google/uuid"
 )
 
+type Dependences struct {
+	AssetsFS       http.FileSystem
+	Msgs           storage.Messages
+	Config         config.Config
+	ProjectBaseDir string
+}
+
 type handlerFunc func(http.ResponseWriter, *http.Request) error
 
-func RegisterRoutes(router chi.Router, msgs storage.Messages, config config.Config, projectBaseDir string) {
+func RegisterRoutes(router chi.Router, deps Dependences) {
 	router.HandleFunc("/hi/{name}", func(w http.ResponseWriter, r *http.Request) {
 		name := r.PathValue("name")
 		w.Write([]byte("Hi, " + name))
@@ -28,18 +35,19 @@ func RegisterRoutes(router chi.Router, msgs storage.Messages, config config.Conf
 			})
 			w.Write([]byte("Sorry, but your URL is incorrect"))
 		}
-		msg := msgs.Take(parsedId) // TODO: add an existence check
+		msg := deps.Msgs.Take(parsedId) // TODO: add an existence check
 		w.Write([]byte(msg.Body))
 	})
 	router.HandleFunc("POST /api/messages", func(w http.ResponseWriter, r *http.Request) {
 		msg := r.FormValue("msg")
 		dur, _ := time.ParseDuration("5m")
-		msgId := msgs.Add(msg, dur)
-		url := "http://" + config.Address + "/m/" + msgId.String()
+		msgId := deps.Msgs.Add(msg, dur)
+		url := "http://" + deps.Config.Address + "/m/" + msgId.String()
 		w.Write([]byte("<div style=\"background-color: bisque; width: auto; height: 100px;\">" + url + "</div>"))
 	})
 
 	router.Get("/", handler(homeHandler{}.handleIndex))
+	router.Handle("/assets/*", http.StripPrefix("/assets", http.FileServer(deps.AssetsFS)))
 }
 
 func handler(h handlerFunc) http.HandlerFunc {
