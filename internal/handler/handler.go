@@ -5,7 +5,6 @@ import (
 	"disapp/internal/storage"
 	"log/slog"
 	"net/http"
-	"time"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -20,17 +19,15 @@ type Dependences struct {
 type handlerFunc func(http.ResponseWriter, *http.Request) error
 
 func RegisterRoutes(router chi.Router, deps Dependences) {
-	router.Get("/m/{uuid}", handler(messageHandler{msgs: deps.Msgs}.handleMessageView))
-	router.HandleFunc("POST /api/messages", func(w http.ResponseWriter, r *http.Request) {
-		msg := r.FormValue("msg")
-		dur, _ := time.ParseDuration("5m")
-		msgId := deps.Msgs.Add(msg, dur)
-		url := "http://" + deps.Config.Address + "/m/" + msgId.String()
-		w.Write([]byte("<div style=\"background-color: bisque; width: auto; height: 100px;\">" + url + "</div>"))
-	})
+	messageHandler := messageHandler{
+		msgs:   deps.Msgs,
+		domain: deps.Config.Address,
+	}
 
-	router.Get("/", handler(homeHandler{}.handleIndex))
 	router.Handle("/assets/*", http.StripPrefix("/assets", http.FileServer(deps.AssetsFS)))
+	router.Get("/", handler(homeHandler{}.handleIndex))
+	router.Get("/m/{uuid}", handler(messageHandler.handleMessageView))
+	router.Post("/api/messages", handler(messageHandler.createMessage))
 }
 
 func handler(h handlerFunc) http.HandlerFunc {

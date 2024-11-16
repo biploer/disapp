@@ -3,12 +3,14 @@ package handler
 import (
 	"disapp/internal/storage"
 	"net/http"
+	"time"
 
 	"github.com/google/uuid"
 )
 
 type messageHandler struct {
-	msgs storage.Messages
+	msgs   storage.Messages
+	domain string
 }
 
 func (m messageHandler) handleMessageView(w http.ResponseWriter, r *http.Request) error {
@@ -24,5 +26,14 @@ func (m messageHandler) handleMessageView(w http.ResponseWriter, r *http.Request
 	}
 	msg := m.msgs.Take(parsedId) // TODO: add an existence check
 	w.Write([]byte(msg.Body))
+	return nil
+}
+
+func (m messageHandler) createMessage(w http.ResponseWriter, r *http.Request) error {
+	msg := r.FormValue("msg")
+	dur, _ := time.ParseDuration("5m")
+	msgId := m.msgs.Add(msg, dur)
+	url := "http://" + m.domain + "/m/" + msgId.String()
+	w.Write([]byte("<div style=\"background-color: bisque; width: auto; height: 100px;\">" + url + "</div>"))
 	return nil
 }
