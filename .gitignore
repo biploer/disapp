@@ -2,3 +2,6 @@ bin/
 config/
 !config/local.yaml
 web/node_modules/
+tmp/
+web/public/assets/*.css
+*_templ.txt
