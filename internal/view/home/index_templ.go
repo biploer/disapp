@@ -43,7 +43,7 @@ func Index() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1>Disappearing Messages</h1><div id=\"messages\"><form><div><label for=\"msg\">Впишите сюда ваше сообщение</label><br><textarea cols=\"30\" rows=\"10\" name=\"msg\" id=\"msg\" placeholder=\"Ваше сообщение, которое исчезнет после одного просмотра\" autocomplete=\"off\"></textarea></div><div><button hx-post=\"/api/messages\" hx-target=\"#messages\">Отправить</button></div></form></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"mx-auto\">Disappearing Messages</h1><div class=\"py-5\" id=\"messages\"><form><label class=\"form-control\"><div class=\"label\"><span class=\"label-text\">Впишите сюда ваше сообщение</span></div><textarea class=\"textarea textarea-primary h-24\" name=\"msg\" id=\"msg\" placeholder=\"Ваше сообщение, которое исчезнет после одного просмотра\" autocomplete=\"off\"></textarea> <button class=\"btn btn-block my-3 max-w-52\" hx-post=\"/api/messages\" hx-target=\"#messages\">Отправить</button></label></form></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
