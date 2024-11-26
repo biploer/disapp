@@ -43,7 +43,7 @@ func Index() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"mx-auto\">Disappearing Messages</h1><section class=\"flex flex-row w-auto my-20\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"flex flex-row w-auto mt-20\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -119,7 +119,7 @@ func form() templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex-none w-96\" id=\"messages\"><form><label class=\"form-control\"><div class=\"label\"><span class=\"label-text\">Впишите сюда ваше сообщение</span></div><textarea class=\"textarea textarea-primary bg-opacity-50 h-72\" name=\"msg\" id=\"msg\" placeholder=\"Ваше сообщение, которое исчезнет после одного просмотра\" autocomplete=\"off\"></textarea> <button class=\"btn btn-block my-3 max-w-52\" hx-post=\"/api/messages\" hx-target=\"#messages\">Отправить</button></label></form></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex-none w-96 max-md:mx-4\" id=\"messages\"><form><label class=\"form-control\"><textarea class=\"textarea textarea-bordered bg-opacity-50 h-72\" name=\"msg\" id=\"msg\" placeholder=\"Ваше сообщение, которое исчезнет после одного просмотра\" autocomplete=\"off\"></textarea> <button class=\"btn btn-block my-3 max-w-52\" hx-post=\"/api/messages\" hx-target=\"#messages\">Отправить</button></label></form></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
