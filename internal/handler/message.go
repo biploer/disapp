@@ -2,6 +2,7 @@ package handler
 
 import (
 	"disapp/internal/storage"
+	"disapp/internal/view/layout"
 	"net/http"
 	"time"
 
@@ -34,6 +35,5 @@ func (m messageHandler) createMessage(w http.ResponseWriter, r *http.Request) er
 	dur, _ := time.ParseDuration("5m")
 	msgId := m.msgs.Add(msg, dur)
 	url := "http://" + m.domain + "/m/" + msgId.String()
-	w.Write([]byte("<div style=\"background-color: bisque; width: auto; height: 100px;\">" + url + "</div>"))
-	return nil
+	return layout.MessageLink(url).Render(r.Context(), w)
 }

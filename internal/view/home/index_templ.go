@@ -43,7 +43,7 @@ func Index() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"flex flex-row w-auto mt-20\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"flex mb-10 justify-center\"><p class=\"w-11/12 text-center\">Данный сервис позволяет отправлять любые сообщения, которые будут <s class=\"text-error\">уничтожены</s>сожжены сразу после прочтения или если истечет таймер</p></section><section class=\"flex flex-row w-auto min-h-[360px]\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

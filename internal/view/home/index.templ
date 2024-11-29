@@ -4,7 +4,10 @@ import "disapp/internal/view/layout"
 
 templ Index() {
 	@layout.Base(layout.BaseProps{Title: "Disappearing Messages"}) {
-        <section class="flex flex-row w-auto mt-20">
+        <section class="flex mb-10 justify-center">
+            <p class="w-11/12 text-center">Данный сервис позволяет отправлять любые сообщения, которые будут <s class="text-error">уничтожены</s>сожжены сразу после прочтения или если истечет таймер</p>
+        </section>
+        <section class="flex flex-row w-auto min-h-[360px]">
             @flame()
             @form()
         </section>
@@ -26,9 +29,6 @@ templ form() {
     <div class="flex-none w-96 max-md:mx-4" id="messages">
         <form>
             <label class="form-control">
-                // <div class="label">
-                //     <span class="label-text">Впишите сюда ваше сообщение</span>
-                // </div>
                 <textarea class="textarea textarea-bordered bg-opacity-50 h-72" name="msg" id="msg" placeholder="Ваше сообщение, которое исчезнет после одного просмотра" autocomplete="off"></textarea>
                 <button class="btn btn-block my-3 max-w-52" hx-post="/api/messages" hx-target="#messages">Отправить</button>
             </label>
