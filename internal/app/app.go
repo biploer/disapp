@@ -16,6 +16,8 @@ import (
 )
 
 func Run(ctx context.Context) error {
+	slog.SetLogLoggerLevel(slog.LevelDebug)
+
 	projectBaseDir, err := filepath.Abs(filepath.Join("cmd", "disapp", "main.go"))
 	if err != nil {
 		panic(err)

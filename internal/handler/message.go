@@ -25,8 +25,11 @@ func (m messageHandler) handleMessageView(w http.ResponseWriter, r *http.Request
 		// })
 		// w.Write([]byte("Sorry, but your URL is incorrect"))
 	}
-	msg := m.msgs.Take(parsedId) // TODO: add an existence check
-	w.Write([]byte(msg.Body))
+	msg, err := m.msgs.Take(parsedId)
+	if err != nil {
+		return err
+	}
+	w.Write([]byte(msg))
 	return nil
 }
 
