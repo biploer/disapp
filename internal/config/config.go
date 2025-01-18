@@ -9,8 +9,9 @@ import (
 )
 
 type Config struct {
-	HTTPServer `yaml:"http_server"`
+	Env        string `yaml:"env" env-required:"true"`
 	AssetsDir  string `yaml:"assets_dir"`
+	HTTPServer `yaml:"http_server"`
 }
 
 type HTTPServer struct {
