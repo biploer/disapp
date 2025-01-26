@@ -1,6 +1,7 @@
 bin/
 config/
 !config/local.yaml
+!config/embed.go
 web/node_modules/
 tmp/
 web/public/assets/*.css
