@@ -1,8 +1,11 @@
 bin/
-config/
-!config/local.yaml
-!config/embed.go
-web/node_modules/
+
+!/config/
+/config/*
+!/config/local*
+!/config/embed*
+
 tmp/
+web/node_modules/
 web/public/assets/*.css
 *_templ.txt
