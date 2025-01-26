@@ -6,39 +6,42 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"path/filepath"
 
+	conf "disapp/config"
 	"disapp/internal/config"
 	"disapp/internal/handler"
 	"disapp/internal/storage"
+	"disapp/web"
 
 	"github.com/go-chi/chi/v5"
 )
 
 func Run(ctx context.Context) error {
-	slog.SetLogLoggerLevel(slog.LevelDebug)
+	var isProdEnv bool
 
-	projectBaseDir, err := filepath.Abs(filepath.Join("cmd", "disapp", "main.go"))
-	if err != nil {
-		panic(err)
-	}
-	projectBaseDir = filepath.Dir(filepath.Dir(filepath.Dir(projectBaseDir)))
-	slog.Debug(fmt.Sprintf("Project base dir: %s", projectBaseDir))
-
-	defaultConfigPath := filepath.Join(projectBaseDir, "config", "local.yaml")
-
-	configPath := flag.String("p", defaultConfigPath, "set config path")
+	flag.BoolVar(&isProdEnv, "p", false, "Use production env configuration, must exist disapp/config/prod.yaml")
 	flag.Parse()
 
-	config := config.MustLoad(*configPath)
+	if !isProdEnv {
+		slog.SetLogLoggerLevel(slog.LevelDebug)
+		slog.Debug("Debug log level is on")
+	}
+
+	confFS := conf.ConfigFS()
+	config := config.MustLoad(confFS, isProdEnv)
+
 	msgs := storage.New()
 
 	router := chi.NewRouter()
+	assetsFS, err := web.AssetsFS()
+	if err != nil {
+		return err
+	}
+
 	handler.RegisterRoutes(router, handler.Dependences{
-		AssetsFS:       http.Dir(config.AssetsDir),
-		Msgs:           msgs,
-		Config:         config,
-		ProjectBaseDir: projectBaseDir,
+		AssetsFS: assetsFS,
+		Msgs:     msgs,
+		Config:   config,
 	})
 
 	server := http.Server{

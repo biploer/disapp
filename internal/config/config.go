@@ -1,8 +1,8 @@
 package config
 
 import (
+	"io/fs"
 	"log"
-	"os"
 	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
@@ -21,16 +21,21 @@ type HTTPServer struct {
 }
 
 // Load configuration file or call Fatalf
-func MustLoad(configPath string) Config {
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		log.Fatalf("config file does not exist: %s", configPath)
-	}
-
+func MustLoad(configFs fs.FS, isProdEnv bool) Config {
 	var config Config
 
-	if err := cleanenv.ReadConfig(configPath, &config); err != nil {
-		log.Fatalf("can not read config: %s", err)
+	fileName := "local.yaml"
+	if isProdEnv {
+		fileName = "prod.yaml"
 	}
 
+	file, err := configFs.Open(fileName)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
+	if err := cleanenv.ParseYAML(file, &config); err != nil {
+		log.Fatalf("can not read config: %s", err)
+	}
 	return config
 }

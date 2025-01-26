@@ -3,6 +3,7 @@ package handler
 import (
 	"disapp/internal/config"
 	"disapp/internal/storage"
+	"io/fs"
 	"log/slog"
 	"net/http"
 
@@ -10,10 +11,9 @@ import (
 )
 
 type Dependences struct {
-	AssetsFS       http.FileSystem
-	Msgs           storage.Messages
-	Config         config.Config
-	ProjectBaseDir string
+	AssetsFS fs.FS
+	Msgs     storage.Messages
+	Config   config.Config
 }
 
 type handlerFunc func(http.ResponseWriter, *http.Request) error
@@ -24,7 +24,8 @@ func RegisterRoutes(router chi.Router, deps Dependences) {
 		domain: deps.Config.Address,
 	}
 
-	router.Handle("/assets/*", http.StripPrefix("/assets", http.FileServer(deps.AssetsFS)))
+	router.Handle("/assets/*", http.StripPrefix("/assets", http.FileServer(http.FS(deps.AssetsFS))))
+	// router.Handle("/assets/*", http.StripPrefix("/assets", http.FileServer(deps.AssetsFS)))
 	router.Get("/", handler(homeHandler{}.handleIndex))
 	router.Get("/m/{uuid}", handler(messageHandler.handleMessageView))
 	router.Post("/api/messages", handler(messageHandler.createMessage))

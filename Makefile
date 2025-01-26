@@ -9,7 +9,8 @@ build-app:
 
 .PHONY: build-templ
 build-templ:
-	templ generate
+	go get -u github.com/a-h/templ
+	go run github.com/a-h/templ/cmd/templ@latest generate
 
 .PHONY: build-css
 build-css:
@@ -29,11 +30,12 @@ watch-app:
 	--build.cmd "$(MAKE) build-app" \
 	--build.bin $(BINPATH) \
 	--build.include_ext "go" \
-	--build.exclude_dir "bin, web"
+	--build.exclude_dir "web/node_modules, bin, web"
 
 .PHONY: watch-templ
 watch-templ:
-	templ generate \
+	go get -u github.com/a-h/templ
+	go run github.com/a-h/templ/cmd/templ@latest generate \
 	--watch \
 	--proxy="http://localhost:8080" \
 	--open-browser=false
