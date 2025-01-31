@@ -11,6 +11,7 @@ import (
 
 type messageHandler struct {
 	msgs   storage.Messages
+	scheme string
 	domain string
 }
 
@@ -37,6 +38,6 @@ func (m messageHandler) createMessage(w http.ResponseWriter, r *http.Request) er
 	msg := r.FormValue("msg")
 	dur, _ := time.ParseDuration("5m")
 	msgId := m.msgs.Add(msg, dur)
-	url := "http://" + m.domain + "/m/" + msgId.String()
+	url := m.scheme + "://" + m.domain + "/m/" + msgId.String()
 	return layout.MessageLink(url).Render(r.Context(), w)
 }

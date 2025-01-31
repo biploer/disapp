@@ -21,11 +21,11 @@ type handlerFunc func(http.ResponseWriter, *http.Request) error
 func RegisterRoutes(router chi.Router, deps Dependences) {
 	messageHandler := messageHandler{
 		msgs:   deps.Msgs,
-		domain: deps.Config.Address,
+		domain: deps.Config.Domain,
+		scheme: deps.Config.Scheme,
 	}
 
 	router.Handle("/assets/*", http.StripPrefix("/assets", http.FileServer(http.FS(deps.AssetsFS))))
-	// router.Handle("/assets/*", http.StripPrefix("/assets", http.FileServer(deps.AssetsFS)))
 	router.Get("/", handler(homeHandler{}.handleIndex))
 	router.Get("/m/{uuid}", handler(messageHandler.handleMessageView))
 	router.Post("/api/messages", handler(messageHandler.createMessage))

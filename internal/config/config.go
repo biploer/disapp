@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"io/fs"
 	"log"
 	"time"
@@ -16,6 +17,8 @@ type Config struct {
 }
 
 type HTTPServer struct {
+	Scheme      string        `yaml:"scheme" env-default:"http"`
+	Domain      string        `yaml:"domain" env-default:"localhost:8080"`
 	Address     string        `yaml:"address" env-required:"true"`
 	Timeout     time.Duration `yaml:"timeout" env-default:"4s"`
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"60s"`
@@ -37,11 +40,15 @@ func MustLoad(configFs fs.FS, isProdEnv bool) Config {
 
 	file, err := configFs.Open(fileName)
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal(err.Error())
 	}
 
 	if err := cleanenv.ParseYAML(file, &config); err != nil {
-		log.Fatalf("can not read config: %s", err)
+		log.Fatalf("can not parse config: %s", err)
 	}
+	if err := cleanenv.ReadEnv(&config); err != nil {
+		log.Fatalf("can not read config depending on tags: %s", err)
+	}
+	fmt.Println(config)
 	return config
 }
