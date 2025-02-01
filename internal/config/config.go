@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"io/fs"
 	"log"
 	"time"
@@ -49,6 +48,5 @@ func MustLoad(configFs fs.FS, isProdEnv bool) Config {
 	if err := cleanenv.ReadEnv(&config); err != nil {
 		log.Fatalf("can not read config depending on tags: %s", err)
 	}
-	fmt.Println(config)
 	return config
 }

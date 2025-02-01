@@ -1,0 +1,14 @@
+[Unit]
+Description=Burning notes
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/root/apps/burning-notes
+ExecStart=/root/apps/burning-notes/burning-notes
+Restart=always
+RestartSec=4
+StandartOutput=inherit
+
+[Install]
+WantedBy=multi-user.target

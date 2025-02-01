@@ -1,6 +1,11 @@
 env: "local" # dev, prod
 assets_dir: "web/public/assets"
 http_server:
+#  scheme: "https"
+#  domain: "burning-notes.ru"
   address: "0.0.0.0:8080"
   timeout: 4s
   idle_timeout: 60s
+# certificate:
+#   cert: "/etc/..."
+#   key: "etc/..."
