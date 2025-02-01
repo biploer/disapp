@@ -41,7 +41,7 @@ jobs:
         
     - name: Connect and run
       # run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit"
-      run: scp ./bin/disapp ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/disapp
+      run: scp ./bin/burning-notes ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/burning-notes
       
     - name: Clean up
       run: rm -rf ~/.ssh

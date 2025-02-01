@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"disapp/internal/config"
-	"disapp/internal/storage"
+	"burning-notes/internal/config"
+	"burning-notes/internal/storage"
 	"io/fs"
 	"log/slog"
 	"net/http"

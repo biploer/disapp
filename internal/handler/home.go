@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"disapp/internal/view/home"
+	"burning-notes/internal/view/home"
 	"net/http"
 )
 

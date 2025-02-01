@@ -8,11 +8,11 @@ import (
 	"log/slog"
 	"net/http"
 
-	conf "disapp/config"
-	"disapp/internal/config"
-	"disapp/internal/handler"
-	"disapp/internal/storage"
-	"disapp/web"
+	conf "burning-notes/config"
+	"burning-notes/internal/config"
+	"burning-notes/internal/handler"
+	"burning-notes/internal/storage"
+	"burning-notes/web"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -20,7 +20,7 @@ import (
 func Run(ctx context.Context) error {
 	var isProdEnv bool
 
-	flag.BoolVar(&isProdEnv, "p", false, "Use production env configuration, must exist disapp/config/prod.yaml")
+	flag.BoolVar(&isProdEnv, "p", false, "Use production env configuration, must exist burning-notes/config/prod.yaml")
 	flag.Parse()
 
 	if !isProdEnv {

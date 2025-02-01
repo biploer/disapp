@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"disapp/internal/storage"
-	"disapp/internal/view/layout"
+	"burning-notes/internal/storage"
+	"burning-notes/internal/view/layout"
 	"net/http"
 	"time"
 

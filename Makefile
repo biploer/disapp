@@ -1,11 +1,11 @@
-BINPATH = bin/disapp
+BINPATH = bin/burning-notes
 
 .PHONY: build
 build: build-templ build-css build-app
 
 .PHONY: build-app
 build-app:
-	go build -o $(BINPATH) cmd/disapp/main.go
+	go build -o $(BINPATH) cmd/burning-notes/main.go
 
 .PHONY: build-templ
 build-templ:

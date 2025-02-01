@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/signal"
 
-	"disapp/internal/app"
+	"burning-notes/internal/app"
 )
 
 func main() {

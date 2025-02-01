@@ -1,6 +1,6 @@
 FROM golang:1.23.1-alpine AS builder
 
-WORKDIR /usr/local/src/disapp
+WORKDIR /usr/local/src/burning-notes
 
 RUN apk --no-cache add --update bash git make gcc musl-dev gettext npm
 
@@ -14,4 +14,4 @@ ADD internal ./internal
 ADD config ./config
 ADD web ./web
 RUN cd web && npm install && cd ..
-RUN go build -o ./bin/disapp cmd/disapp/main.go
+RUN go build -o ./bin/burning-notes cmd/burning-notes/main.go
