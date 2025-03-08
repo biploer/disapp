@@ -52,7 +52,7 @@ func Run(ctx context.Context) error {
 
 	handler.RegisterRoutes(router, handler.Dependences{
 		AssetsFS: assetsFS,
-		Msgs:     msgs,
+		Msgs:     &msgs,
 		Config:   config,
 	})
 

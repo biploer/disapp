@@ -3,6 +3,7 @@ package storage
 import (
 	"fmt"
 	"log/slog"
+	"sync"
 	"time"
 
 	"github.com/google/uuid"
@@ -10,19 +11,25 @@ import (
 
 const DEFAULT_DURATION = "30m"
 
-type Message struct {
+type message struct {
 	timer     *time.Timer
 	Body      string
 	CreatedAt time.Time
 }
 
-type Messages map[uuid.UUID]Message
-
-func New() Messages {
-	return make(Messages)
+type storage struct {
+	messages map[uuid.UUID]message
+	sync.Mutex
 }
 
-func (m Messages) Add(text string, duration ...time.Duration) uuid.UUID {
+func New() storage {
+	return storage{messages: make(map[uuid.UUID]message)}
+}
+
+func (s *storage) Add(text string, duration ...time.Duration) uuid.UUID {
+	s.Lock()
+	defer s.Unlock()
+
 	id, _ := uuid.NewRandom()
 	currDuration, _ := time.ParseDuration(DEFAULT_DURATION)
 
@@ -30,9 +37,12 @@ func (m Messages) Add(text string, duration ...time.Duration) uuid.UUID {
 		currDuration = duration[0]
 	}
 
-	m[id] = Message{
+	s.messages[id] = message{
 		timer: time.AfterFunc(currDuration, func() {
-			delete(m, id)
+			s.Lock()
+			defer s.Unlock()
+
+			delete(s.messages, id)
 			slog.Debug("Message has been delete by timeout")
 		}),
 		Body:      text,
@@ -43,13 +53,16 @@ func (m Messages) Add(text string, duration ...time.Duration) uuid.UUID {
 	return id
 }
 
-func (m Messages) Take(id uuid.UUID) (string, error) {
-	msg, ok := m[id]
+func (s *storage) Take(id uuid.UUID) (string, error) {
+	s.Lock()
+	defer s.Unlock()
+
+	msg, ok := s.messages[id]
 	if !ok {
-		return "", fmt.Errorf("Message with current id didn`t exist")
+		return "", fmt.Errorf("message with current id didn`t exist")
 	}
 	msg.timer.Stop()
-	delete(m, id)
+	delete(s.messages, id)
 
 	slog.Debug("Message has been read")
 	return msg.Body, nil

@@ -2,17 +2,25 @@ package handler
 
 import (
 	"burning-notes/internal/config"
-	"burning-notes/internal/storage"
 	"io/fs"
 	"log/slog"
 	"net/http"
+	"sync"
+	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 )
+
+type messStorage interface {
+	Add(text string, duration ...time.Duration) uuid.UUID
+	Take(id uuid.UUID) (string, error)
+	sync.Locker
+}
 
 type Dependences struct {
 	AssetsFS fs.FS
-	Msgs     storage.Messages
+	Msgs     messStorage
 	Config   config.Config
 }
 

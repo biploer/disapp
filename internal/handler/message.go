@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"burning-notes/internal/storage"
 	"burning-notes/internal/view/layout"
 	"net/http"
 	"time"
@@ -10,7 +9,7 @@ import (
 )
 
 type messageHandler struct {
-	msgs   storage.Messages
+	msgs   messStorage
 	scheme string
 	domain string
 }
