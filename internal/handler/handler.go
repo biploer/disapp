@@ -5,7 +5,6 @@ import (
 	"io/fs"
 	"log/slog"
 	"net/http"
-	"sync"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -15,7 +14,6 @@ import (
 type messStorage interface {
 	Add(text string, duration ...time.Duration) uuid.UUID
 	Take(id uuid.UUID) (string, error)
-	sync.Locker
 }
 
 type Dependences struct {
@@ -35,7 +33,7 @@ func RegisterRoutes(router chi.Router, deps Dependences) {
 
 	router.Handle("/assets/*", http.StripPrefix("/assets", http.FileServer(http.FS(deps.AssetsFS))))
 	router.Get("/", handler(homeHandler{}.handleIndex))
-	router.Get("/m/{uuid}", handler(messageHandler.handleMessageView))
+	router.Post("/api/messages/take", handler(messageHandler.handleMessageView))
 	router.Post("/api/messages", handler(messageHandler.createMessage))
 }
 

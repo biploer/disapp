@@ -19,7 +19,7 @@ type message struct {
 
 type storage struct {
 	messages map[uuid.UUID]message
-	sync.Mutex
+	mutex    sync.Mutex
 }
 
 func New() storage {
@@ -27,8 +27,8 @@ func New() storage {
 }
 
 func (s *storage) Add(text string, duration ...time.Duration) uuid.UUID {
-	s.Lock()
-	defer s.Unlock()
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 
 	id, _ := uuid.NewRandom()
 	currDuration, _ := time.ParseDuration(DEFAULT_DURATION)
@@ -39,8 +39,8 @@ func (s *storage) Add(text string, duration ...time.Duration) uuid.UUID {
 
 	s.messages[id] = message{
 		timer: time.AfterFunc(currDuration, func() {
-			s.Lock()
-			defer s.Unlock()
+			s.mutex.Lock()
+			defer s.mutex.Unlock()
 
 			delete(s.messages, id)
 			slog.Debug("Message has been delete by timeout")
@@ -54,8 +54,8 @@ func (s *storage) Add(text string, duration ...time.Duration) uuid.UUID {
 }
 
 func (s *storage) Take(id uuid.UUID) (string, error) {
-	s.Lock()
-	defer s.Unlock()
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 
 	msg, ok := s.messages[id]
 	if !ok {
