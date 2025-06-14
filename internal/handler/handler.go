@@ -13,6 +13,7 @@ import (
 
 type messStorage interface {
 	Add(text string, duration ...time.Duration) uuid.UUID
+	Check(id uuid.UUID) bool
 	Take(id uuid.UUID) (string, error)
 }
 
@@ -33,7 +34,8 @@ func RegisterRoutes(router chi.Router, deps Dependences) {
 
 	router.Handle("/assets/*", http.StripPrefix("/assets", http.FileServer(http.FS(deps.AssetsFS))))
 	router.Get("/", handler(homeHandler{}.handleIndex))
-	router.Post("/api/messages/take", handler(messageHandler.handleMessageView))
+	router.Get("/m/{uuid}", handler(messageHandler.showPreview))
+	router.Post("/api/messages/take", handler(messageHandler.showMessage))
 	router.Post("/api/messages", handler(messageHandler.createMessage))
 }
 

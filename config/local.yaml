@@ -8,4 +8,4 @@ http_server:
   idle_timeout: 60s
 # certificate:
 #   cert: "/etc/..."
-#   key: "etc/..."
+#   key: "/etc/..."

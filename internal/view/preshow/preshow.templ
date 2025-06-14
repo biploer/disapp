@@ -1,0 +1,21 @@
+package preshow
+
+import "burning-notes/internal/view/layout"
+
+templ Index(uuid string) {
+    @layout.Base(layout.BaseProps{Title: "burning-notes: Do u want to see message?"}) {
+        <section id="show" class="flex flex-col items-center my-10">
+            <div>
+                <p class="w-11/12 text-center mb-5">Хотите посмотреть сообщение, после чего оно будет уничтожено навсегда?</p>
+                <div class="flex-row justify-center">
+                    <a class="btn btn-outline btn-success my-3 mx-3 w-20"
+                        hx-post="/api/messages/take"
+                        hx-vals={ templ.JSExpression(`{"uuid":"` + uuid + `"}`) }
+                        hx-target="#show"
+                    >Да</a>
+                    <a class="btn btn-outline my-3 mx-3 w-20" href="/">Нет</a>
+                </div>
+            </div>
+        </section>
+    }
+}

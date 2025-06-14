@@ -53,6 +53,14 @@ func (s *storage) Add(text string, duration ...time.Duration) uuid.UUID {
 	return id
 }
 
+func (s *storage) Check(id uuid.UUID) bool {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	_, ok := s.messages[id]
+	return ok
+}
+
 func (s *storage) Take(id uuid.UUID) (string, error) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
