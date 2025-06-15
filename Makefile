@@ -27,18 +27,19 @@ watch:
 .PHONY: watch-app
 watch-app:
 	go run github.com/air-verse/air@latest \
-	--build.cmd "$(MAKE) build-app" \
-	--build.bin $(BINPATH) \
-	--build.include_ext "go" \
-	--build.exclude_dir "web/node_modules, bin, web"
+	-build.cmd "$(MAKE) build-app" \
+	-build.bin $(BINPATH) \
+	-build.include_ext "go,css,yaml" \
+	-build.include_dir "internal,cmd,config,web/public/assets" \
+	-proxy.enabled "true" \
+	-proxy.app_port "8080" \
+	-proxy.proxy_port "8180"
 
 .PHONY: watch-templ
 watch-templ:
 	go get -u github.com/a-h/templ
 	go run github.com/a-h/templ/cmd/templ@latest generate \
 	--watch \
-	--proxy="http://localhost:8080" \
-	--open-browser=false
 
 .PHONY: watch-css
 watch-css:
