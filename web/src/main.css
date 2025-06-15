@@ -1,8 +1,29 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@plugin "daisyui" {
+  themes: dark --prefersdark, light --default, coffee, cupcake, retro, cyberpunk, valentine, aqua, business;
+}
 
-.flame{
+@source '../../internal/view/**/*.templ';
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+.flame{ 
     z-index: -1;
     margin-left: 10%;
     background:linear-gradient(-45deg, red, orange);
@@ -11,8 +32,8 @@
     animation:0.8s flame infinite ease-in-out;
     filter:blur(10px);
     position: absolute;
-    box-shadow:17px 20px 90px oklch(var(--s));
-    border:45px solid oklch(var(--b2));
+    box-shadow:17px 20px 90px var(--color-secondary);
+    border:45px solid var(--color-base-200);
     border-left-width:25px;
     border-top-width:25px;
 }
