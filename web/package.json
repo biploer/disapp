@@ -1,7 +1,8 @@
 {
   "devDependencies": {
     "daisyui": "^5.0.43",
-    "tailwindcss": "^4.1.10"
+    "tailwindcss": "^4.1.10",
+    "@tailwindcss/cli": "^4.1.10"
   },
   "scripts": {
     "build:css": "npx @tailwindcss/cli -i src/main.css -o public/assets/main.css",

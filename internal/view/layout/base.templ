@@ -14,12 +14,14 @@ templ Base(props BaseProps) {
 			<script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
 			<link rel="stylesheet" href="/assets/main.css"/>
 		</head>
-		<body>
-			@header()
-			<div class="max-w-(--breakpoint-md) mx-auto py-5 relative min-h-[500px] flex-1 flex-col mb-auto">
-				{ children... }
-			</div>
-			@footer()
+		<body class="h-full">
+            <div class="min-h-screen flex flex-col">
+                @header()
+                <main class="max-w-(--breakpoint-md) mx-auto py-5 relative min-h-[500px] grow shrink flex-col mb-auto">
+                    { children... }
+                </main>
+                @footer()
+            </div>
 		</body>
 	</html>
 }
