@@ -20,7 +20,7 @@ func (m messageHandler) createMessage(w http.ResponseWriter, r *http.Request) er
 	dur, _ := time.ParseDuration("5m")
 	msgId := m.msgs.Add(msg, dur)
 	url := m.scheme + "://" + m.domain + "/m/" + msgId.String()
-	return layout.MessageLink(url).Render(r.Context(), w)
+	return layout.MessageCard("Ссылка на записку", url).Render(r.Context(), w)
 }
 
 func (m messageHandler) showPreview(w http.ResponseWriter, r *http.Request) error {
@@ -52,5 +52,5 @@ func (m messageHandler) showMessage(w http.ResponseWriter, r *http.Request) erro
 		return err
 	}
 
-	return layout.MessageLink(msg).Render(r.Context(), w)
+	return layout.MessageCard("Записка", msg).Render(r.Context(), w)
 }

@@ -1,19 +1,24 @@
 package layout
 
-templ MessageLink(link string) {
-    <div class="textarea textarea-bordered bg-opacity-50 h-72 min-w-72 relative">
-        <span id="messageLink">{ link }</span>
-        <button class="btn btn-outline m-2 absolute bottom-4 right-4" onclick="copyText()">
-            <svg class="fill-current w-7 h-7" width="800px" height="800px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-                <path d="M768 832a128 128 0 0 1-128 128H192A128 128 0 0 1 64 832V384a128 128 0 0 1 128-128v64a64 64 0 0 0-64 64v448a64 64 0 0 0 64 64h448a64 64 0 0 0 64-64h64z"/>
-                <path d="M384 128a64 64 0 0 0-64 64v448a64 64 0 0 0 64 64h448a64 64 0 0 0 64-64V192a64 64 0 0 0-64-64H384zm0-64h448a128 128 0 0 1 128 128v448a128 128 0 0 1-128 128H384a128 128 0 0 1-128-128V192A128 128 0 0 1 384 64z"/>
-            </svg>
-        </button>
+templ MessageCard(title, info string) {
+    <div class="card bg-base-200 opacity-70 w-64">
+        <div class="card-body">
+            <h2 class="card-title">{ title }</h2>
+            <p id="MessageCard">{ info }</p>
+            <div class="card-actions justify-end">
+                <button class="btn btn-outline" onclick="copyText()">
+                    <svg class="fill-current w-7 h-7" width="800px" height="800px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M768 832a128 128 0 0 1-128 128H192A128 128 0 0 1 64 832V384a128 128 0 0 1 128-128v64a64 64 0 0 0-64 64v448a64 64 0 0 0 64 64h448a64 64 0 0 0 64-64h64z"/>
+                        <path d="M384 128a64 64 0 0 0-64 64v448a64 64 0 0 0 64 64h448a64 64 0 0 0 64-64V192a64 64 0 0 0-64-64H384zm0-64h448a128 128 0 0 1 128 128v448a128 128 0 0 1-128 128H384a128 128 0 0 1-128-128V192A128 128 0 0 1 384 64z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
     </div>
     <script>
         function copyText() {
-            let messageLink = document.querySelector("#messageLink");
-            navigator.clipboard.writeText(messageLink.innerHTML);
+            let MessageCard = document.querySelector("#MessageCard");
+            navigator.clipboard.writeText(MessageCard.innerHTML);
         }
     </script>
 }
