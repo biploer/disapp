@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"burning-notes/internal/dto"
+	"burning-notes/internal/usecase"
 	"burning-notes/internal/view/layout"
 	"burning-notes/internal/view/preshow"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -10,16 +13,33 @@ import (
 )
 
 type messageHandler struct {
-	msgs   messStorage
-	scheme string
-	domain string
+	message usecase.Message
+	scheme  string
+	domain  string
 }
 
 func (m messageHandler) createMessage(w http.ResponseWriter, r *http.Request) error {
 	msg := r.FormValue("msg")
-	dur, _ := time.ParseDuration("5m")
-	msgId := m.msgs.Add(msg, dur)
-	url := m.scheme + "://" + m.domain + "/m/" + msgId.String()
+	dur, err := time.ParseDuration("5m")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Unsaported type of duration"))
+		return fmt.Errorf("invalid value of duration while handle creating message: %v", err)
+	}
+
+	input := dto.CreateMessageInput{
+		Body:     msg,
+		Duration: dur,
+	}
+
+	output, err := m.message.CreateMessage(&input)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Error accured while saving your message"))
+		return fmt.Errorf("handling create message: %v", err)
+	}
+
+	url := m.scheme + "://" + m.domain + "/m/" + output.ID
 	return layout.MessageCard("Ссылка на записку", url).Render(r.Context(), w)
 }
 
