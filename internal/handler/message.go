@@ -35,7 +35,7 @@ func (m messageHandler) createMessage(w http.ResponseWriter, r *http.Request) er
 	output, err := m.message.CreateMessage(&input)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Error accured while saving your message"))
+		w.Write([]byte("Error occured while saving your message"))
 		return fmt.Errorf("handling create message: %v", err)
 	}
 
@@ -49,15 +49,21 @@ func (m messageHandler) showPreview(w http.ResponseWriter, r *http.Request) erro
 	id := r.PathValue("uuid")
 	parsedId, err := uuid.Parse(id)
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(INCORRECT_URL))
-		return err
+		return fmt.Errorf("invalid value of id while handle showPreview: %v", err)
 	}
 
-	isExist := m.msgs.Check(parsedId)
-	if !isExist {
+	output, err := m.message.CheckMessage(&dto.CheckMessageInput{ID: parsedId})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Error occured while finding your message"))
+		return err
+	} else if !output.IsExist {
 		_, err = w.Write([]byte(INCORRECT_URL))
 		return err
 	}
+
 	return preshow.Index(id).Render(r.Context(), w)
 }
 
