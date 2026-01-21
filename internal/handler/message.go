@@ -71,12 +71,16 @@ func (m messageHandler) showMessage(w http.ResponseWriter, r *http.Request) erro
 	id := r.FormValue("uuid")
 	parsedId, err := uuid.Parse(id)
 	if err != nil {
-		return err
-	}
-	msg, err := m.msgs.Take(parsedId)
-	if err != nil {
-		return err
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Sorry, but your id is incorrect"))
+		return fmt.Errorf("invalid value of id while handle showMessage: %v", err)
 	}
 
-	return layout.MessageCard("Записка", msg).Render(r.Context(), w)
+	output, err := m.message.TakeMessage(&dto.TakeMessageInput{ID: parsedId})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return fmt.Errorf("Error occured while getting your message")
+	}
+
+	return layout.MessageCard("Записка", output.Body).Render(r.Context(), w)
 }
