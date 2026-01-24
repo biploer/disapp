@@ -12,6 +12,7 @@ import (
 	"burning-notes/internal/config"
 	"burning-notes/internal/handler"
 	"burning-notes/internal/storage"
+	"burning-notes/internal/usecase"
 	"burning-notes/web"
 
 	"github.com/go-chi/chi/v5"
@@ -31,7 +32,8 @@ func Run(ctx context.Context) error {
 	confFS := conf.ConfigFS()
 	config := config.MustLoad(confFS, isProdEnv)
 
-	msgs := storage.New()
+	storage := storage.New()
+	message := usecase.NewMessage(storage)
 
 	var tlsConfig *tls.Config
 	if isProdEnv {
@@ -52,7 +54,7 @@ func Run(ctx context.Context) error {
 
 	handler.RegisterRoutes(router, handler.Dependences{
 		AssetsFS: assetsFS,
-		Msgs:     &msgs,
+		Message:  *message,
 		Config:   config,
 	})
 

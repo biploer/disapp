@@ -22,23 +22,18 @@ type storage struct {
 	mutex    sync.Mutex
 }
 
-func New() storage {
-	return storage{messages: make(map[uuid.UUID]message)}
+func New() *storage {
+	return &storage{messages: make(map[uuid.UUID]message)}
 }
 
-func (s *storage) Add(text string, duration ...time.Duration) uuid.UUID {
+func (s *storage) AddMessage(text string, duration time.Duration) uuid.UUID {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
 	id, _ := uuid.NewRandom()
-	currDuration, _ := time.ParseDuration(DEFAULT_DURATION)
-
-	if len(duration) > 0 {
-		currDuration = duration[0]
-	}
 
 	s.messages[id] = message{
-		timer: time.AfterFunc(currDuration, func() {
+		timer: time.AfterFunc(duration, func() {
 			s.mutex.Lock()
 			defer s.mutex.Unlock()
 
@@ -53,7 +48,7 @@ func (s *storage) Add(text string, duration ...time.Duration) uuid.UUID {
 	return id
 }
 
-func (s *storage) Check(id uuid.UUID) bool {
+func (s *storage) CheckMessage(id uuid.UUID) bool {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
@@ -61,7 +56,7 @@ func (s *storage) Check(id uuid.UUID) bool {
 	return ok
 }
 
-func (s *storage) Take(id uuid.UUID) (string, error) {
+func (s *storage) PopMessage(id uuid.UUID) (string, error) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
