@@ -8,7 +8,7 @@ WorkingDirectory=/root/apps/burning-notes
 ExecStart=/root/apps/burning-notes/burning-notes -p
 Restart=always
 RestartSec=4
-StandartOutput=inherit
+StandardOutput=inherit
 
 [Install]
 WantedBy=multi-user.target
