@@ -20,11 +20,16 @@ type messageHandler struct {
 
 func (m messageHandler) createMessage(w http.ResponseWriter, r *http.Request) error {
 	msg := r.FormValue("msg")
-	dur, err := time.ParseDuration("5m")
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Unsaported type of duration"))
-		return fmt.Errorf("invalid value of duration while handle creating message: %v", err)
+	durationStr := r.FormValue("dur")
+
+	var dur time.Duration
+	if durationStr != "" {
+		var err error
+		if dur, err = time.ParseDuration(durationStr); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("Unsaported type of duration"))
+			return fmt.Errorf("invalid value of duration while handle creating message: %v", err)
+		}
 	}
 
 	input := dto.CreateMessageInput{
